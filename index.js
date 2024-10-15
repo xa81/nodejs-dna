@@ -4,7 +4,7 @@ const crypto = require('crypto');
 const fs = require('fs');
 
 class DomainNameAPI {
-  static VERSION = '2.0.13';
+  static VERSION = '2.0.14';
 
   constructor(
       userName = 'ownername', password = 'ownerpass', testMode = false) {
@@ -329,9 +329,6 @@ async RejectTransfer(domainName) {
     });
 }
 
-
-
-
 /**
  * Renew domain
  * @param {string} domainName
@@ -383,7 +380,9 @@ async RegisterWithContactInfo(domainName, period, contacts, nameServers = ["dns.
             UserName: this.serviceUsername,
             DomainName: domainName,
             Period: period,
-            NameServerList: nameServers,
+            NameServerList: {
+                string: nameServers
+            },
             LockStatus: eppLock,
             PrivacyProtectionStatus: privacyLock,
             AdministrativeContact: contacts.Administrative,
@@ -403,7 +402,7 @@ async RegisterWithContactInfo(domainName, period, contacts, nameServers = ["dns.
         };
     }
 
-    // API çağrısı yap ve yanıtı işle
+
     return this.callApiFunction('RegisterWithContactInfo', parameters).then((response) => {
         const data = response[Object.keys(response)[0]];
         let result = {};
@@ -415,7 +414,7 @@ async RegisterWithContactInfo(domainName, period, contacts, nameServers = ["dns.
                 data: this.parseDomainInfo(data.DomainInfo)
             };
         } else {
-            // Hata durumunu ayarla
+
             result = data;
         }
 
